@@ -46,12 +46,12 @@ First, a few assumptions:
 To use this utility, create a copy of the `config.yml.template` file inside the `configs` folder (and
 rename it to something like `ddns.example.com.yml` for example).  Create one configuration per each record / 
 domain pair you intend to update.  For example, I might have two configuration
-files: `example.com.yaml` that updates the record for the naked (no www
-prefix) domain example.com, and a second config, `www.example.com.yaml` that updates the
+files: `example.com.yml` that updates the record for the naked (no www
+prefix) domain example.com, and a second config, `www.example.com.yml` that updates the
 record for www.example.com.
 
 To do a one-off update of your DNS record, simply run `python
-cloudflare_ddns.py www.example.com.yaml` from your terminal.
+cloudflare_ddns.py www.example.com.yml` from your terminal.
 The script will determine your public IP address and automatically update the
 Cloudflare DNS record along with it.
 
@@ -66,7 +66,7 @@ Just add a line to your [crontab](http://en.wikipedia.org/wiki/Cron) and let
 cron run it for you at a regular interval.
 
     # Every 30 minutes, check the current public IP, and update the record on Cloudflare if needed.
-    */30 * * * * /path/to/code/cloudflare_ddns.py config.yaml
+    */30 * * * * /path/to/code/cloudflare_ddns.py example.com.yml
 
 This example will update the record every 30 minutes. You'll want to be sure
 that you insert the correct paths to reflect were the codebase is located.
