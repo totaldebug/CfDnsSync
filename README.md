@@ -71,7 +71,7 @@ cron run it for you at a regular interval.
 This example will update the record every 30 minutes. You'll want to be sure
 that you insert the correct paths to reflect were the codebase is located.
 
-If you want to learn more about the CloudFlare API, you can read on
+If you want to learn more about the Cloudflare API, you can read on
 [here](http://www.cloudflare.com/docs/client-api.html).
 
 Credits and Thanks
