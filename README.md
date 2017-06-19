@@ -1,8 +1,6 @@
 cloudflare-ddns
 ===============
-
-
-*Deprecated*:  Since I no longer use this I don't have much motivation to deal with issues/PRs.  Feel free to check out [Ethaligan's fork](https://github.com/Ethaligan/cloudflare-ddns).
+This is a continued version of [thatjpk's cloudflare-ddns](https://github.com/thatjpk/cloudflare-ddns).
 
 Introduction
 ------------
@@ -70,4 +68,5 @@ Credits and Thanks
    generally being cool.
  - [icanhazip.com](http://icanhazip.com/) for making grabbing your public IP
     from a script super easy.
+ - [thatjpk](https://github.com/thatjpk/) for the initial releases of this script.
 
