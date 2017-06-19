@@ -20,6 +20,19 @@ You'll need a [Python](https://www.python.org/downloads/) interpreter and the fo
 You can install them with `pip` :
 
 	pip install -r requirements.txt
+	
+Features
+-----
+  - Command line usage
+  - Can use `dig` to fetch the public IP
+  - IPv4 and IPv6 support (A and AAAA records)
+  - Logging
+  - Multiple configuration files
+  - Lightweight
+  - Ability to edit some of your record settings such as:
+  	- Time to Live (TTL)
+	- Cloudflare proxy mode
+  - Smart update (your record will be updated only if needed)
 
 Usage
 -----
@@ -68,5 +81,5 @@ Credits and Thanks
    generally being cool.
  - [icanhazip.com](http://icanhazip.com/) for making grabbing your public IP
     from a script super easy.
- - [thatjpk](https://github.com/thatjpk/) for the initial releases of this script.
+ - [thatjpk](https://github.com/thatjpk/) for the initial releases of this project.
 
