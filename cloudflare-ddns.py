@@ -48,7 +48,7 @@ def main():
 
             # Read config file
             with open( config_path, 'r' ) as file:
-                config = yaml.load( file )
+                config = yaml.safe_load( file )
                 cf_api_key = args.cf_api_key or config.get('cf_api_key')
                 cf_email = args.cf_email or config.get('cf_email')
                 cf_domain = args.cf_domain or config.get('cf_domain')
