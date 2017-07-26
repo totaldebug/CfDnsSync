@@ -16,8 +16,8 @@ You can install them with `pip` :
 	
 ## Features
   - Two ways to grab your IP address
-        - HTTP 
-        - DNS lookup (dig)
+  	- HTTP 
+	- DNS lookup (dig)
   - IPv4 and IPv6 support (A and AAAA records)
   - Logging
   - One configuration file for multiple records
