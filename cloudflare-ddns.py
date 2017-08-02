@@ -12,7 +12,7 @@ CURRENT_DIR = path.dirname(path.realpath(__file__))
 
 # CLI
 parser = argparse.ArgumentParser('cloudflare-ddns.py')
-parser.add_argument('-z', '--zone', dest="zone", help="Zone name")
+parser.add_argument('-z', '--zone', dest="zone", action="append", help="Zone name")
 args = parser.parse_args()
 
 # Logger
@@ -41,76 +41,78 @@ def main():
     if not args.zone:
         log.critical("Please specify a zone name")
         return
-    config_path = path.join(CURRENT_DIR, 'zones', args.zone + '.yml')
-    if not path.isfile(config_path):
-        log.critical("Zone '{}' not found".format(args.zone))
-        return
 
-    # Read config file
-    with open(config_path, 'r') as file:
-        config = yaml.safe_load(file)
-        cf_api_key = config.get('cf_api_key')
-        cf_email = config.get('cf_email')
-        cf_zone = config.get('cf_zone')
-        cf_records = config.get('cf_records')
-        cf_resolving_method = config.get('cf_resolving_method', 'http')
-        cf_logging_level = config.get('cf_logging_level', 'INFO')
+    for zone in set(args.zone):
+        config_path = path.join(CURRENT_DIR, 'zones', zone + '.yml')
+        if not path.isfile(config_path):
+            log.critical("Zone '{}' not found".format(zone))
+            return
 
-    # Create API authentication headers
-    global API_HEADERS
-    API_HEADERS = {
-        'X-Auth-Key': cf_api_key,
-        'X-Auth-Email': cf_email
-    }
+        # Read config file
+        with open(config_path, 'r') as file:
+            config = yaml.safe_load(file)
+            cf_api_key = config.get('cf_api_key')
+            cf_email = config.get('cf_email')
+            cf_zone = config.get('cf_zone')
+            cf_records = config.get('cf_records')
+            cf_resolving_method = config.get('cf_resolving_method', 'http')
+            cf_logging_level = config.get('cf_logging_level', 'INFO')
 
-    # Get zone informations
-    payload = {
-        'name': cf_zone
-    }
-    r = requests.get(API_ENDPOINT + 'zones', headers=API_HEADERS, params=payload)
-    data = r.json().get('result')
-    if not data:
-        log.critical("The zone '{}' was not found on your account".format(cf_zone))
-        return
-    cf_zone_uuid = data[0]['id']
-    cf_zone_name = data[0]['name']
+        # Create API authentication headers
+        global API_HEADERS
+        API_HEADERS = {
+            'X-Auth-Key': cf_api_key,
+            'X-Auth-Email': cf_email
+        }
 
-    # Logging
-    fh = logging.FileHandler(path.join(CURRENT_DIR, 'logs', cf_zone_name + '.log'))
-    fh.setFormatter(formatter)
-    log.addHandler(fh)
+        # Get zone informations
+        payload = {
+            'name': cf_zone
+        }
+        r = requests.get(API_ENDPOINT + 'zones', headers=API_HEADERS, params=payload)
+        data = r.json().get('result')
+        if not data:
+            log.critical("The zone '{}' was not found on your account".format(cf_zone))
+            return
+        cf_zone_uuid = data[0]['id']
+        cf_zone_name = data[0]['name']
+
+        # Logging
+        fh = logging.FileHandler(path.join(CURRENT_DIR, 'logs', cf_zone_name + '.log'))
+        fh.setFormatter(formatter)
+        log.addHandler(fh)
 
 
-    # Get (all) zone records
-    cf_zone_records = get_zone_records(cf_zone_uuid)
+        # Get (all) zone records
+        cf_zone_records = get_zone_records(cf_zone_uuid)
 
-    # Update each record
-    for records in cf_records:
-        for record_name in records:
-            local_record = records[record_name]
+        # Update each record
+        for records in cf_records:
+            for record_name in records:
+                local_record = records[record_name]
 
-            # Set logging
-            log_level = local_record.get('log', 'INFO')
-            fh.setLevel(logging.getLevelName(log_level))
-            ch.setLevel(logging.getLevelName(log_level))
+                # Set logging
+                log_level = local_record.get('log', 'INFO')
+                fh.setLevel(logging.getLevelName(log_level))
+                ch.setLevel(logging.getLevelName(log_level))
 
-            # Format record name
-            if record_name == '@':
-                name = cf_zone_name
-            else:
-                name = record_name + '.' + cf_zone_name
+                # Format record name
+                if record_name == '@':
+                    name = cf_zone_name
+                else:
+                    name = record_name + '.' + cf_zone_name
 
-            # Try to find the record by its name and type
-            zone_record = None
-            for record in cf_zone_records:
-                if record.get('name') == name and record.get('type') == local_record.get('type'):
-                    zone_record = record
+                # Try to find the record by its name and type
+                zone_record = None
+                for record in cf_zone_records:
+                    if record.get('name') == name and record.get('type') == local_record.get('type'):
+                        zone_record = record
 
-            # Update the record if found
-            if not zone_record:
-                log.error("The record '{}' ({}) was not found".format(name, local_record.get('type')))
-                continue
-            update_record(zone_record, local_record, cf_resolving_method)
+                # Update the record if found
+                if not zone_record:
+                    log.error("The record '{}' ({}) was not found".format(name, local_record.get('type')))
+                    continue
+                update_record(zone_record, local_record, cf_resolving_method)
 
 # Get all records from zone
 def get_zone_records(zone_uuid):
