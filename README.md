@@ -11,8 +11,7 @@ You'll need a [Python](https://www.python.org/downloads/) interpreter and the fo
  - [Requests](http://docs.python-requests.org/en/latest/) (`pip install
    requests`)
    
-You can install them with `pip` :
-	pip install -r requirements.txt
+You can install them with `pip`: `pip install -r requirements.txt`
 	
 ## Features
   - Two ways to grab your IP address
@@ -26,7 +25,7 @@ You can install them with `pip` :
 	- Proxy mode
 	- Logging level
   - Lightweight
-  - Smart update (your record will only be updated only if needed)
+  - Smart update (your record will only be updated if needed)
 
 ## Usage
 First, a few assumptions:
@@ -36,7 +35,7 @@ First, a few assumptions:
 To use this utility, create a copy of the `example.com.yml` file inside the `zones` folder and
 rename it to your zone name.
 To do a one-off update of your DNS record, simply run `python
-cloudflare_ddns.py -z example.com` from your terminal.
+cloudflare-ddns.py -z example.com` from your terminal.
 The script will determine your public IP address and automatically update the records along with it and the settings you provided.
 
 If the program encounters an issue while attempting to update Cloudflare's 
@@ -49,7 +48,7 @@ Just add a line to your [crontab](http://en.wikipedia.org/wiki/Cron) and let
 cron run it for you at a regular interval.
 
     # Every 30 minutes, update my Cloudflare records.
-    */30 * * * * /path/to/cloudflare-ddns.py -z example.com
+    */30 * * * * python /path/to/cloudflare-ddns.py -z example.com
 
 This example will update your records every 30 minutes. You'll want to be sure
 that you insert the correct paths to reflect where the codebase is located.
