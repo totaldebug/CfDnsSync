@@ -133,7 +133,6 @@ def get_zone_records(zone_uuid):
             + str(current_page)
             + "&per_page=50",
             headers=API_HEADERS,
-            params=payload,
         )
         data = r.json().get("result")
         if not data:
