@@ -57,7 +57,10 @@ def main():
 
         # Create API authentication headers
         global API_HEADERS
-        API_HEADERS = {'"Authorization': "Bearer " + cf_api_key}
+        API_HEADERS = {
+            '"Authorization': "Bearer " + cf_api_key,
+            "Content-Type": "application/json",
+        }
         # Get zone informations
         payload = {"name": cf_zone}
         r = requests.get(API_ENDPOINT + "zones", headers=API_HEADERS, params=payload)
