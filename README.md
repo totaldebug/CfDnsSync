@@ -1,5 +1,5 @@
 # cloudflare-ddns
-This is a continued version of [thatjpk's cloudflare-ddns](https://github.com/thatjpk/cloudflare-ddns).
+This is an updated version of [adrienbrignon's cloudflare-ddns](https://github.com/adrienbrignon/cloudflare-ddns).
 
 ## Introduction
 A script for dynamically updating Cloudflare DNS records.
