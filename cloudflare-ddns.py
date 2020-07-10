@@ -101,19 +101,16 @@ def main():
                 # Try to find the record by its name and type
 
                 for record in cf_zone_records:
-                    zone_record = None
                     if record.get("name") == name and record.get(
                         "type"
                     ) == local_record.get("type"):
-                        zone_record = record
-                    # Update the record if found
-                    if not zone_record:
-                        log.error(
-                            f"The record '{name}' ({local_record.get('type')}) was not found"
-                        )
-                        return
-                    else:
-                        update_record(zone_record, local_record, cf_resolving_method)
+                        update_record(record, local_record, cf_resolving_method)
+                        found = 1
+                        continue
+                if not found:
+                    log.error(
+                       f"The record '{name}' ({local_record.get('type')}) was not found"
+                    )
 
 
 # Get all records from zone
