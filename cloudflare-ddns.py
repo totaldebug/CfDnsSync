@@ -51,6 +51,7 @@ def main():
             cf_api_key = config.get("cf_api_key")
             cf_email = config.get("cf_email")
             cf_zone = config.get("cf_zone")
+						cf_domain = config.get("cf_domain")
             cf_records = config.get("cf_records")
             cf_resolving_method = config.get("cf_resolving_method", "http")
             cf_logging_level = config.get("cf_logging_level", "INFO")
@@ -60,16 +61,20 @@ def main():
         API_HEADERS = {
             '"Authorization': "Bearer " + cf_api_key,
             "Content-Type": "application/json",
-        }
-        # Get zone informations
-        payload = {"name": cf_zone}
-        r = requests.get(API_ENDPOINT + "zones", headers=API_HEADERS, params=payload)
-        data = r.json().get("result")
-        if not data:
-            log.critical("The zone '{}' was not found on your account".format(cf_zone))
-            return
-        cf_zone_uuid = data[0]["id"]
-        cf_zone_name = data[0]["name"]
+				}
+				if not cf_zone:
+          # Get zone informations
+          payload = {"name": cf_domain}
+          r = requests.get(API_ENDPOINT + "zones", headers=API_HEADERS, params=payload)
+          data = r.json().get("result")
+          if not data:
+              log.critical("The zone '{}' was not found on your account".format(cf_domain))
+              return
+          cf_zone_uuid = data[0]["id"]
+          cf_zone_name = data[0]["name"]
+        else: 
+          cf_zone_uuid = cf_zone
+          cf_zone_name = cf_domain
         # Logging
         fh = logging.FileHandler(path.join(CURRENT_DIR, "logs", cf_zone_name + ".log"))
         fh.setFormatter(formatter)

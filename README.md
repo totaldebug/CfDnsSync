@@ -56,6 +56,12 @@ that you insert the correct paths to reflect where the codebase is located.
 If you want to learn more about the Cloudflare API, you can read on
 [here](https://api.cloudflare.com/).
 
+## YAML Configuration
+
+If you want to restrict the token access to only be allowed to update a specific zone then set the `cf_zone:` option. 
+
+This option being set means a list of the zones is not required. 
+
 ## Credits and Thanks
  - [Cloudflare](https://www.cloudflare.com/) for having an API and otherwise
    generally being cool.

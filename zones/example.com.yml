@@ -9,9 +9,12 @@ cf_email: 'admin@example.com'
 # https://support.cloudflare.com/hc/en-us/articles/200167836-Where-do-I-find-my-Cloudflare-API-key
 cf_api_key: 1a79a4d60de6718e8e5b326e338ae533
 
-# Cloudflare zone name
+# Cloudflare zone info
+# Optional: The zone ID for the domain
+cf_zone: 2397198273981239817daisdhaiwhd
+
 # If you're updating 'ddns.example.com' set this to 'example.com'
-cf_zone: example.com
+cf_domain:
 
 # List of records
 # If you're updating 'example.com' record, set its name to '@'.
