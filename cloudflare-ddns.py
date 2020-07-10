@@ -125,9 +125,8 @@ def get_zone_records(zone_uuid):
     # Get all records
     while current_page != total_pages:
         current_page += 1
-        payload = {"page": current_page, "per_page": 50}
         r = requests.get(
-            API_ENDPOINT + "zones/" + zone_uuid + "/dns_records",
+            API_ENDPOINT + "zones/" + zone_uuid + "/dns_records?page=" + cirrent_page + "&per_page=50",
             headers=API_HEADERS,
             params=payload,
         )
