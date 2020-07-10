@@ -1,2 +1,4 @@
 *.pyc
 *.swp
+zones/*.yml
+!zones/example.com.yml
