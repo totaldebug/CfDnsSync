@@ -59,7 +59,7 @@ def main():
         # Create API authentication headers
         global API_HEADERS
         API_HEADERS = {
-            '"Authorization': "Bearer " + cf_api_key,
+            "Authorization": "Bearer " + cf_api_key,
             "Content-Type": "application/json",
         }
         if not cf_zone:
