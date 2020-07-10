@@ -99,8 +99,9 @@ def main():
                 else:
                     name = record_name + "." + cf_zone_name
                 # Try to find the record by its name and type
-                zone_record = None
+
                 for record in cf_zone_records:
+                    zone_record = None
                     if record.get("name") == name and record.get(
                         "type"
                     ) == local_record.get("type"):
@@ -108,11 +109,9 @@ def main():
                     # Update the record if found
                     if not zone_record:
                         log.error(
-                            "The record '{}' ({}) was not found".format(
-                                name, local_record.get("type")
-                            )
+                            f"The record '{name}' ({local_record.get('type')}) was not found"
                         )
-                        continue
+                        return
                     else:
                         update_record(zone_record, local_record, cf_resolving_method)
 
@@ -160,9 +159,7 @@ def update_record(zone_record, local_record, resolving_method):
     if proxied:
         ttl = 1
     elif not 120 <= ttl <= 2147483647 and not ttl == 1:
-        log.error(
-            "Skipping record '{}' ({}) because of bad TTL".format(name, record_type)
-        )
+        log.error(f"Skipping record '{name}' ({record_type}) because of bad TTL")
         return
 
     # Check if the record needs to be updated
