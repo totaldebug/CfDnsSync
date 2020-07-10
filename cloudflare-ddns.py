@@ -113,7 +113,8 @@ def main():
                             )
                         )
                         continue
-                    update_record(zone_record, local_record, cf_resolving_method)
+                    else:
+                        update_record(zone_record, local_record, cf_resolving_method)
 
 
 # Get all records from zone
