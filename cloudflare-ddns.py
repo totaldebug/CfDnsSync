@@ -156,6 +156,13 @@ def update_record(zone_record, local_record, resolving_method):
     ttl = local_record.get("ttl", zone_record.get("ttl"))
     proxied = local_record.get("proxied", zone_record.get("proxied"))
 
+    # Check public IP is present
+    if len(ip) == 0:
+        log.critical(
+            "An error occured whilst trying to get your IP Address: '{}'.".format(ip)
+        )
+        return
+
     # Check if the TTL is valid
     if proxied:
         ttl = 1
@@ -231,11 +238,6 @@ def get_ip(method, record_type):
         )
         output, err = p.communicate()
         public_ip = output.decode().rstrip()
-        if len(public_ip) == 0:
-            log.critical(
-                "An error occured whilst trying to get your IP Address."
-            )
-            return
 
     # HTTP resolving method
     elif method == "http":
