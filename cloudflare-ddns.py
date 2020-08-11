@@ -160,7 +160,7 @@ def update_record(zone_record, local_record, resolving_method):
     if proxied:
         ttl = 1
     elif not 120 <= ttl <= 2147483647 and not ttl == 1:
-        log.error(f"Skipping record '{name}' ({record_type}) because of bad TTL")
+        log.error("Skipping record '{}' ({}) because of bad TTL".format(name, record_type))
         return
 
     # Check if the record needs to be updated
