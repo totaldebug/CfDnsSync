@@ -200,7 +200,7 @@ def update_record(zone_record, local_record, resolving_method):
     if not success:
         log.critical(
             "An error occured whilst trying to update '{}' ({}) record. {}".format(
-                name, record_type, r.json().message
+                name, record_type, r.json().get("message")
             )
         )
         return
