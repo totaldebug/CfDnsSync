@@ -193,7 +193,7 @@ def update_record(zone_record, local_record, resolving_method):
     if not success:
         log.critical(
             "An error occured whilst trying to update '{}' ({}) record. {}".format(
-                name, record_type, r.json()
+                name, record_type, r.json().message
             )
         )
         return
@@ -231,6 +231,11 @@ def get_ip(method, record_type):
         )
         output, err = p.communicate()
         public_ip = output.decode().rstrip()
+        if len(public_ip) == 0:
+            log.critical(
+                "An error occured whilst trying to get your IP Address."
+            )
+            return
 
     # HTTP resolving method
     elif method == "http":
