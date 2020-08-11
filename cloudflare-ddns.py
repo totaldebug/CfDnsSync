@@ -5,6 +5,7 @@ from os import path
 from sys import exit
 import logging
 import argparse
+import ipaddress
 from subprocess import Popen, PIPE
 
 # Current directory
@@ -156,13 +157,6 @@ def update_record(zone_record, local_record, resolving_method):
     ttl = local_record.get("ttl", zone_record.get("ttl"))
     proxied = local_record.get("proxied", zone_record.get("proxied"))
 
-    # Check public IP is present
-    if len(ip) == 0:
-        log.critical(
-            "An error occured whilst trying to get your IP Address: '{}'.".format(ip)
-        )
-        return
-
     # Check if the TTL is valid
     if proxied:
         ttl = 1
@@ -245,6 +239,17 @@ def get_ip(method, record_type):
     elif method == "http":
         r = requests.get("https://ipv{}.icanhazip.com".format(v))
         public_ip = r.text.rstrip()
+
+    # Check public IP is present
+    try:
+        piblic_ip = ipaddress.ip_address(public_ip)
+    except:
+        log.critical(
+            "An error occured whilst trying to get your IP Address: '{}'.".format(
+                public_ip
+            )
+        )
+        exit(1)
 
     # Save the IP address in cache
     IP_ADDRESSES[v] = public_ip
