@@ -10,12 +10,12 @@ You'll need a [Python](https://www.python.org/downloads/) interpreter and the fo
  - [PyYAML](https://bitbucket.org/xi/pyyaml) (`pip install pyyaml`)
  - [Requests](http://docs.python-requests.org/en/latest/) (`pip install
    requests`)
-   
-You can install them with `pip`: `pip install -r requirements.txt`
-	
+
+You can install them with `poetry` (`pip3 install poetry`): `poetry install --no-dev`
+
 ## Features
   - Two ways to grab your IP address
-  	- HTTP 
+  	- HTTP
 	- DNS lookup (dig)
   - IPv4 and IPv6 support (A and AAAA records)
   - Logging
@@ -38,7 +38,7 @@ To do a one-off update of your DNS record, simply run `python
 cloudflare-ddns.py -z example.com` from your terminal.
 The script will determine your public IP address and automatically update the records along with it and the settings you provided.
 
-If the program encounters an issue while attempting to update Cloudflare's 
+If the program encounters an issue while attempting to update Cloudflare's
 records, you can check the the `logs` folder for more informations.
 
 Because dynamic IPs can change regularly, it's recommended that you run this
@@ -58,9 +58,9 @@ If you want to learn more about the Cloudflare API, you can read on
 
 ## YAML Configuration
 
-If you want to restrict the token access to only be allowed to update a specific zone then set the `cf_zone:` option. 
+If you want to restrict the token access to only be allowed to update a specific zone then set the `cf_zone:` option.
 
-This option being set means a list of the zones is not required. 
+This option being set means a list of the zones is not required.
 
 ## Credits and Thanks
  - [Cloudflare](https://www.cloudflare.com/) for having an API and otherwise
