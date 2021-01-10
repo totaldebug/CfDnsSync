@@ -17,12 +17,13 @@ parser.add_argument("-z", "--zone", dest="zone", action="append", help="Zone nam
 args = parser.parse_args()
 
 # Logger
+FORMATTER = logging.Formatter("%(asctime)s : %(levelname)s : %(message)s")
+
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
+ch.setFormatter(FORMATTER)
 log.addHandler(ch)
 
 # Cloudflare API
@@ -31,6 +32,7 @@ API_ENDPOINT = "https://api.cloudflare.com/client/v4/"
 
 # Cached IP addresses
 IP_ADDRESSES = {4: None, 6: None}
+
 
 # Start the client
 def main():
@@ -50,7 +52,6 @@ def main():
         with open(config_path, "r") as file:
             config = yaml.safe_load(file)
             cf_api_key = config.get("cf_api_key")
-            cf_email = config.get("cf_email")
             cf_zone = config.get("cf_zone")
             cf_domain = config.get("cf_domain")
             cf_records = config.get("cf_records")
@@ -82,7 +83,7 @@ def main():
             cf_zone_name = cf_domain
         # Logging
         fh = logging.FileHandler(path.join(CURRENT_DIR, "logs", cf_zone_name + ".log"))
-        fh.setFormatter(formatter)
+        fh.setFormatter(FORMATTER)
         log.addHandler(fh)
         # Get (all) zone records
         cf_zone_records = get_zone_records(cf_zone_uuid)
@@ -242,13 +243,9 @@ def get_ip(method, record_type):
 
     # Check public IP is present
     try:
-        piblic_ip = ipaddress.ip_address(public_ip)
-    except:
-        log.critical(
-            "An error occured whilst trying to get your IP Address: '{}'.".format(
-                public_ip
-            )
-        )
+        public_ip = ipaddress.ip_address(public_ip)
+    except Exception as ex:
+        log.critical(f"An error occured whilst trying to get your IP Address: '{ex}'.")
         exit(1)
 
     # Save the IP address in cache
