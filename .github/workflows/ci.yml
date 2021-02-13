@@ -19,7 +19,7 @@ jobs:
       - name: Running YAMLlint
         uses: "docker://pipelinecomponents/yamllint:latest"
         with:
-          args: yamllint .
+          args: yamllint ./zones
   remark_lint:
     runs-on: ubuntu-latest
     steps:
@@ -70,4 +70,4 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-b') || contains(github.ref, '-a') }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
