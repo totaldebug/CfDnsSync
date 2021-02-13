@@ -1,5 +1,3 @@
-%YAML 1.1
-# Cloudflare DDNS example configuration
 ---
 
 # Your Cloudflare API key
@@ -17,17 +15,17 @@ cf_domain: example.com
 # If you're updating 'example.com' record, set its name to '@'.
 # Only write the subdomain ('ddns' for 'ddns.example.com')
 cf_records:
-    - '@':
-        type: A
-        proxied: true
-        log: ERROR
-    - 'ddns':
-        type: A
-    - 'ddns':
-        type: AAAA
-        ttl: 300
-        proxied: false
-        log: INFO
+  - '@':
+      type: A
+      proxied: true
+      log: ERROR
+  - 'ddns':
+      type: A
+  - 'ddns':
+      type: AAAA
+      ttl: 300
+      proxied: false
+      log: INFO
 
 # This is the method used to discover the server's IP address
 # The faster one is 'dig' but it may not be available on your system
