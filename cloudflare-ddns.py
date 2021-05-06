@@ -181,7 +181,7 @@ def update_record(zone_record, local_record, resolving_method):
         "ttl": ttl,
         "name": name,
         "type": record_type,
-        "content": ip,
+        "content": str(ip),
         "proxied": proxied,
     }
     r = requests.put(
