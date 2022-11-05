@@ -3,3 +3,6 @@
 zones/*.yml
 !zones/example.com.yml
 !.vscode/*
+__pycache__/
+/.vscode/
+/config.yml

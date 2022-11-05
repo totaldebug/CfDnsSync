@@ -1,0 +1,42 @@
+name: Feature request
+description: Request a new feature or other non-bugfix improvement
+labels: ["type/feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you continue requesting a new feature, be sure that you are using the latest version and a feature request doesnt already exist, see
+
+        - https://github.com/totaldebug/CfDnsSync/issues?q=is%3Aissue+is%3Aopen+label%3Atype%2Ffeature
+
+        You can find latest version from here:
+        - https://github.com/totaldebug/CfDnsSync/release
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Fearture
+      description: A concise description of what you expected the feature to do.
+      placeholder: Tell us what you should see!
+    validations:
+      required: true
+
+  - type: textarea
+    id: use
+    attributes:
+      label: Use Case
+      description: Is there a specific goal that this would help you accomplish, or can you provide any other context about how you would like to use this feature?
+    validations:
+      required: false
+
+  - type: textarea
+    id: workarounds
+    attributes:
+      label: Workarounds
+      description: Is there an existing workaround for this issue? Did you try downgrading? Try finding version that can be used as a workaround.
+
+  - type: textarea
+    id: plan
+    attributes:
+      label: Plan to implement
+      description: Do you have an idea of how this should be implemented? Or could you submit a PR to implement this?

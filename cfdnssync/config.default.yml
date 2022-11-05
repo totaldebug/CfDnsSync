@@ -1,0 +1,12 @@
+logging:
+  append: true
+  # Whether to show timestamps in console messages
+  console_time: false
+  debug: false
+  filename: cfdnssync.log
+  filter:
+#    # Filter out all messages with level WARNING
+#    - level: WARNING
+#    # Filter out message with level WARNING and containing a text
+#    - level: WARNING
+#      message: "not found on Cloudflare"

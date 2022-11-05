@@ -1,0 +1,113 @@
+name: Bug report
+description: File a bug report
+labels: "type/bug"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you continue reporting the bug, be sure that you are using supported installation method, see
+
+        - https://github.com/totaldebug/CfDnsSync#installation
+
+        You can find latest version from here:
+        - https://github.com/totaldebug/CfDnsSync/release
+
+  - type: textarea
+    id: description
+    attributes:
+      label: The problem
+      description: A description of what the bug is
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A description of what you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce the behavior
+      description: Write the command you used to run it, what you did before and after
+      placeholder: |
+        1.
+        2.
+        3.
+        ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: traceback
+    attributes:
+      render: text
+      label: Error trace / logs
+      description: >
+        A complete traceback of the error or content of log file.
+
+        This will be automatically formatted into code, so no need for backticks.
+
+  - type: textarea
+    id: workarounds
+    attributes:
+      label: Workarounds
+      description: Is there an existing workaround for this issue? Did you try downgrading? Try finding version that can be used as a workaround.
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Install method
+      description: How did you install CfDnsSync
+      options:
+        - pipx
+        - docker-compose
+        - pip (not supported)
+        - git clone (not supported)
+        - zip download (not supported)
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      render: yaml
+      label: Config file contents
+      description: >
+        Contents of your config file.
+
+        See "Config File" for location of it from `cfdnssync info`.
+        This will be automatically formatted as yaml text.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Run `cfdnssync --version`
+      placeholder: eg. 2.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python Version
+      placeholder: eg. 3.10.0
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System and Version
+      placeholder: eg. Windows 11, macOS 10.15, Ubuntu 22.04, etc.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Make sure to close your issue when it's solved! If you found the solution yourself please comment so that others benefit from it.
