@@ -1,0 +1,16 @@
+FROM python:latest
+
+RUN apt update
+
+RUN apt upgrade  -y
+
+RUN apt install zsh python3-sphinx yadm -y
+
+RUN pip install --user poetry
+ENV PATH="${PATH}:/root/.local/bin"
+
+RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
+RUN yadm clone https://github.com/marksie1988/dotfiles
+RUN poetry completions zsh > ~/.zfunc/_poetry
+
+CMD ["zsh"]

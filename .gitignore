@@ -6,3 +6,6 @@ zones/*.yml
 __pycache__/
 /.vscode/
 /config.yml
+.devcontainer/*
+!.devcontainer/recommended-Dockerfile
+!.devcontainer/recommended-devcontainer.json

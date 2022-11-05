@@ -1,0 +1,20 @@
+{
+    "name": "CfDnsSync",
+    "dockerFile": "Dockerfile",
+    "context": "..",
+    "extensions": [
+        "github.vscode-pull-request-github",
+        "ms-python.python",
+        "yzhang.markdown-all-in-one",
+        "eamodio.gitlens"
+    ],
+    "settings": {
+        "files.eol": "\n",
+        "editor.tabSize": 4,
+        "terminal.integrated.shell.linux": "/bin/zsh",
+        "editor.formatOnPaste": false,
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true,
+        "files.trimTrailingWhitespace": true
+    }
+}
