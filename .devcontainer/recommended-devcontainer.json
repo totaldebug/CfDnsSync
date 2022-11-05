@@ -6,7 +6,8 @@
         "github.vscode-pull-request-github",
         "ms-python.python",
         "yzhang.markdown-all-in-one",
-        "eamodio.gitlens"
+        "eamodio.gitlens",
+        "sourcery.sourcery"
     ],
     "settings": {
         "files.eol": "\n",

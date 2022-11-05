@@ -33,12 +33,12 @@ def command():
 @click.pass_context
 def cli(ctx, version: bool):
     """
-    CloudFlareUpdater updates Cloudflare DNS records with local public IP
+    CfDnsSync updates Cloudflare DNS records with local public IP
     """
 
     if version:
         from .version import version
-        print(f"CloudFlareUpdater {version()}")
+        print(f"CfDnsSync {version()}")
         return
 
     if not ctx.invoked_subcommand:
@@ -54,6 +54,39 @@ def info():
     pass
 
 @command()
+def zones():
+    """
+    Print configured zones
+    """
+
+    pass
+
+
+@command()
+@click.option(
+    "--zones",
+    "zones",
+    type=str,
+    multiple=True,
+    show_default=True,
+    help="Sync specific zone only",
+)
+@click.option(
+    "--dry-run",
+    "dry_run",
+    type=bool,
+    default=False,
+    is_flag=True,
+    help="Dry run: Do not make changes",
+)
+@click.option(
+    "--no-progress-bar",
+    "no_progress_bar",
+    type=bool,
+    default=False,
+    is_flag=True,
+    help="Don't output progress bars",
+)
 def sync():
     """
     Perform sync with Cloudflare DNS
@@ -86,6 +119,7 @@ def update():
 
 
 cli.add_command(info)
+cli.add_command(zones)
 cli.add_command(sync)
 cli.add_command(bug_report)
 cli.add_command(update)

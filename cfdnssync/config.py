@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from os.path import exists
 
 from cfdnssync.path import config_yml, default_config_file
-
+from cfdnssync.factory import factory
 
 @dataclass
 class RunConfig:
