@@ -66,13 +66,13 @@ class Sync:
                 if matched_record:
                     if dns_record.state == "absent":
                         # Remove DNS record from CloudFlare
-                        logger.info(f"[REMOVE] {name}")
+                        self.cf.delete_record(matched_record, dry_run=dry_run)
                     elif dns_record.state == "present":
                         # Update the record on CloudFlare
-                        self.cf.update_record(dns_record, matched_record, public_ip)
+                        self.cf.update_record(dns_record, matched_record, public_ip, dry_run=dry_run)
                 elif dns_record.state == "present":
                     # Add the record to CloudFlare
-                    self.cf.add_record(dns_record, cf_zone.id, cf_zone.name, public_ip)
+                    self.cf.add_record(dns_record, cf_zone.id, cf_zone.name, public_ip, dry_run=dry_run)
                 elif dns_record.state == "absent":
                     # Record doesnt exist and is state absent, no action required.
                     logger.info(f"[SKIP] {name} already absent.")

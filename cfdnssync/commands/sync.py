@@ -18,6 +18,6 @@ def sync(zones: list[str], dry_run: bool, no_progress_bar: bool):
     with measure_time("Completed Sync"):
         runner = factory.sync()
         if dry_run:
-            logger.info("Enabled dry-run mode: mot making changes")
+            logger.info("Enabled dry-run mode: not making changes")
 
         runner.sync(dry_run=config.dry_run)
