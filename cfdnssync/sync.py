@@ -18,18 +18,26 @@ class SyncConfig:
 
 
 class Sync:
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, progressbar=None):
         self.config = config
         self.sync_config = SyncConfig(config)
         self.cf = factory.cloudflare_api()
         self.ip_addresses = {4: None, 6: None}
+        self._progressbar = progressbar
 
+    def progressbar(self, iterable, **kwargs):
+        if self._progressbar:
+            pb = self._progressbar(iterable, **kwargs)
+            with pb as records:
+                yield from records
+        else:
+            yield from iterable
 
     def sync(self, dry_run=False):
         zones = factory.zones(enabled_only=True)
 
 
-        # Loop through enabled zones
+        # Loop through enabled zones.
         for zone in zones:
             logger.info(f"Getting zone: {zone.zone_id}")
             # grab the zone identifier
@@ -44,7 +52,8 @@ class Sync:
             for cf_zone in sorted(cf_zones, key=lambda v: v.id):
                 logger.info(f"Processing Zone: {cf_zone.id} with name: {cf_zone.name}")
 
-            for dns_record in zone.subdomains:
+            it = self.progressbar(zone.subdomains, desc="Processing subdomains")
+            for dns_record in it:
                 if self.ip_addresses[4] and dns_record.type != 'AAAA':
                     public_ip = self.ip_addresses[4]
                 elif self.ip_addresses[6] and dns_record.type == 'AAAA':
@@ -76,6 +85,3 @@ class Sync:
                 elif dns_record.state == "absent":
                     # Record doesnt exist and is state absent, no action required.
                     logger.info(f"[SKIP] {name} already absent.")
-
-        logger.info("Sync Completed")
-

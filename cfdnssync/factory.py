@@ -7,8 +7,10 @@ class Factory:
         from cfdnssync.sync import Sync
 
         config = self.config()
+        run_config = self.run_config()
+        pb = self.progressbar(run_config.progressbar)
 
-        return Sync(config)
+        return Sync(config, progressbar=pb)
 
     def progressbar(self, enabled=True):
         if enabled:
@@ -22,7 +24,7 @@ class Factory:
 
             warnings.filterwarnings("ignore", category=TqdmExperimentalWarning)
 
-            return partial(tqdm, options={'console': console})
+            return partial(tqdm, unit='record', options={'console': console})
 
         return None
 
