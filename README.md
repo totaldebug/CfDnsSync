@@ -32,11 +32,9 @@
 <tr>
 <td>
 
-**cloudflare-ddns** is a **high-quality** _app_ that is capable of **updating DNS Records**
+**CfDnsSync** is a **high-quality** _app_ that is capable of **updating DNS Records**
 
 It comes in extremely useful if you have a **dynamic IP Address** and you are hosting servers behind it, its an easy way to make it **_pseydo-static_**.
-
-This is an updated version of [adrienbrignon's cloudflare-ddns](https://github.com/adrienbrignon/cloudflare-ddns).
 
 </td>
 </tr>
@@ -61,6 +59,9 @@ poetry install --no-dev
 First, a few assumptions:
  - You are using CloudFlare to host the DNS for a domain you own.
  - You have one or more A/AAAA records in Cloudflare you intend to dynamically update.
+
+ `export CLOUDFLARE_API_TOKEN='0000000000'`
+ 
 
 1. To use this utility, create a copy of the `example.com.yml` file inside the `zones` folder.
 2. Rename the file to your domain zone name.

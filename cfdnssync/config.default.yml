@@ -10,3 +10,5 @@ logging:
 #    # Filter out message with level WARNING and containing a text
 #    - level: WARNING
 #      message: "not found on Cloudflare"
+ip:
+  method: http # dig or http defaults to http

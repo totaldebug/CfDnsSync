@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from os import getenv
 from os.path import exists
 
 from cfdnssync.path import config_yml, default_config_file
 from cfdnssync.factory import factory
+from cfdnssync.zones import Zone
 
 @dataclass
 class RunConfig:
@@ -66,7 +68,6 @@ class ConfigLoader:
 
 
 class Config(dict):
-
     initialized = False
     config_yml = config_yml
 
@@ -79,6 +80,8 @@ class Config(dict):
         if not self.initialized:
             self.initialize()
         return dict.__contains__(self, item)
+
+
 
     @property
     def log_file(self):
@@ -100,6 +103,13 @@ class Config(dict):
     def log_console_time(self):
         return self["logging"]["console_time"]
 
+    @property
+    def ip_method(self) -> str:
+        return self["ip"]["method"]
+
+    @property
+    def zones(self):
+        return self['zones']
 
     def initialize(self):
         """

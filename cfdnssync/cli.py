@@ -54,11 +54,32 @@ def info():
     pass
 
 @command()
+@click.option(
+    "--zone",
+    "-z",
+    "zone_ids",
+    multiple=True,
+    show_default=True,
+    help="Show specific zone only, can be used multiple times.",
+)
+@click.option(
+    "--enabled-only",
+    "enabled_only",
+    is_flag=True,
+    show_default=True,
+    help="Only show enabled zones",
+)
+@click.option(
+    "--show-subdomains",
+    "show_subdomains",
+    is_flag=True,
+    show_default=True,
+    help="Show a list of subdomains",
+)
 def zones():
     """
     Print configured zones
     """
-
     pass
 
 

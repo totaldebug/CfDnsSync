@@ -1,11 +1,13 @@
 from cfdnssync.config import Config
-from cfdnssync.factory import logger
+from cfdnssync.factory import factory, logger
+from cfdnssync.util.get_ip import get_public_ip
+from cfdnssync.zones import CfZone, CfRecord
 
 class SyncConfig:
     def __init__(self, config: Config):
         try:
-            self.zones=list(config["sync"])
-        except:
+            self.zones=list(config["zones"])
+        except Exception:
             logger.error(f"sync section missing from config, add this to the config file: {config.config_yml}")
 
     def __getitem__(self, key):
@@ -17,11 +19,63 @@ class SyncConfig:
 
 class Sync:
     def __init__(self, config: Config):
-        self.config = SyncConfig(config)
-
-        for zone in self.config.zones:
-            logger.info(f"Zone: { zone['zone'] }, api_token: { zone['api_token'] }")
+        self.config = config
+        self.sync_config = SyncConfig(config)
+        self.cf = factory.cloudflare_api()
+        self.ip_addresses = {4: None, 6: None}
 
 
     def sync(self, dry_run=False):
-        pass
+        zones = factory.zones(enabled_only=True)
+
+
+        # Loop through enabled zones
+        for zone in zones:
+            logger.info(f"Getting zone: {zone.zone_id}")
+            # grab the zone identifier
+            try:
+                cf_zones: list[CfZone] = factory.cf_zones(cf=self.cf, zone_id=zone.zone_id)
+
+            except Exception as e:
+                logger.error(f'Unable to get zone: {zone.zone_id} from CloudFlare: {e}')
+                continue
+
+            # there should only be one zone
+            for cf_zone in sorted(cf_zones, key=lambda v: v.id):
+                logger.info(f"Processing Zone: {cf_zone.id} with name: {cf_zone.name}")
+
+            for dns_record in zone.subdomains:
+                if self.ip_addresses[4] and dns_record.type != 'AAAA':
+                    public_ip = self.ip_addresses[4]
+                elif self.ip_addresses[6] and dns_record.type == 'AAAA':
+                    public_ip = self.ip_addresses[6]
+                else:
+                    public_ip_ver = get_public_ip(self.config, dns_record.type)
+                    self.ip_addresses[public_ip_ver[0]] = public_ip_ver[1]
+                    public_ip = public_ip_ver[1]
+
+                if dns_record.name == "@":
+                    name = cf_zone.name
+                else:
+                    name = f"{dns_record.name}.{cf_zone.name}"
+                matched_record = None
+                for cf_dns_record in cf_zone.records:
+                    if name == cf_dns_record.name and dns_record.type == cf_dns_record.type:
+                        matched_record = cf_dns_record
+                        continue
+                if matched_record:
+                    if dns_record.state == "absent":
+                        # Remove DNS record from CloudFlare
+                        logger.info(f"[REMOVE] {name}")
+                    elif dns_record.state == "present":
+                        # Update the record on CloudFlare
+                        self.cf.update_record(dns_record, matched_record, public_ip)
+                elif dns_record.state == "present":
+                    # Add the record to CloudFlare
+                    self.cf.add_record(dns_record, cf_zone.id, cf_zone.name, public_ip)
+                elif dns_record.state == "absent":
+                    # Record doesnt exist and is state absent, no action required.
+                    logger.info(f"[SKIP] {name} already absent.")
+
+        logger.info("Sync Completed")
+

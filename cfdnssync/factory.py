@@ -1,3 +1,7 @@
+import CloudFlare
+
+from cfdnssync.zones import CfRecord, CfZone
+
 class Factory:
     def sync(self):
         from cfdnssync.sync import Sync
@@ -46,6 +50,31 @@ class Factory:
         from cfdnssync.config import Config
 
         return Config()
+
+    def zones(self, zone_ids:list[str] = None, enabled_only:bool=None):
+        from cfdnssync.zones import Zone
+        config = self.config()
+        zones = [Zone(zone) for zone in config.zones]
+        filtered_zones = []
+        if enabled_only:
+            filtered_zones.extend(zone for zone in zones if zone.enabled is True)
+        if zone_ids:
+            for zone in filtered_zones:
+                if zone.zone_id not in zone_ids:
+                    filtered_zones.remove(zone)
+        if not zone_ids and not enabled_only:
+            filtered_zones = zones
+        return filtered_zones
+
+    def cloudflare_api(self):
+        from cfdnssync.cloudflare_api import CloudflareApi
+        return CloudflareApi(factory)
+
+    def cf_zones(self, cf: CloudFlare, zone_id):
+        zones: CfZone = [CfZone(zone) for zone in cf.get_zone(zone_id)]
+        for zone in zones:
+            zone.records = [CfRecord(record) for record in cf.get_dns_records(zone.id)]
+        return zones
 
 factory = Factory()
 logger = factory.logger()
