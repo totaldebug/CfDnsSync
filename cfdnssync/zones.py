@@ -9,7 +9,7 @@ class Zone:
         self.zone = zone
 
     @property
-    def zone_id(self):
+    def name(self):
         return self.zone['zone']
 
     @property
@@ -21,16 +21,16 @@ class Zone:
         return self.zone['enabled']
 
     @property
-    def subdomains(self):
-        return [SubDomain(subdomain) for subdomain in self.zone['records']]
+    def records(self):
+        return [Record(subdomain) for subdomain in self.zone['records']]
 
-class SubDomain:
+class Record:
     """
-    Class containing subdomains for a zone
+    Class containing records for a zone
     """
 
-    def __init__(self, subdomain):
-        self.sub = subdomain
+    def __init__(self, record):
+        self.sub = record
 
     @property
     def name(self):

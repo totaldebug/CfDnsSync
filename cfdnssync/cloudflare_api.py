@@ -1,7 +1,9 @@
+from typing import Optional
 import CloudFlare
 
-from cfdnssync.zones import CfRecord, CfZone, SubDomain
+from cfdnssync.zones import CfRecord, Record
 from cfdnssync.factory import Factory, logging
+
 class CloudflareApi:
     """
     Cloudflare API class abstracting common data access and dealing with requests.
@@ -14,26 +16,27 @@ class CloudflareApi:
         except CloudFlare.exceptions.CloudFlareAPIError as e:
             self.logger.fatal('api error: %d %s' % (e, e))
 
-    def get_zone(self, zone_id: str = None) -> list[dict]:
-        """Gets all zones from CloudFlare, or specific by zone_id
+    def get_zone(self, name: Optional[str] = None) -> list[dict] | None:
+        """Gets all zones from CloudFlare, or specific by zone name
 
         Args:
-            zone_id (str, optional): Zone ID. Defaults to None.
+            name (str, optional): Zone Name. Defaults to None.
 
         Returns:
             list[dict]: List of dictionaries with zones
         """
         try:
-            if zone_id:
-                if (zone := self.cf.zones.get(params={'id': zone_id})):
+            if name:
+                if zone := self.cf.zones.get(params={'name': name}):
                     return zone
                 else:
-                    raise
+                    self.logger.error("Unable to find zone")
+                    exit(1)
             return self.cf.zones.get()
         except CloudFlare.exceptions.CloudFlareAPIError as e:
             self.logger.fatal('api error: %d %s' % (e, e))
 
-    def get_dns_records(self, zone_id: str = None) -> list[dict]:
+    def get_dns_records(self, zone_id: Optional[str] = None) -> list[dict]:
         """Get all DNS records for the associated domain
 
         Args:
@@ -44,11 +47,11 @@ class CloudflareApi:
         """
         return self.cf.zones.dns_records.get(zone_id)
 
-    def add_record(self, local_record: SubDomain, zone_id: str, zone_name: str, public_ip: str, dry_run: bool = False) -> None:
+    def add_record(self, local_record: Record, zone_id: str, zone_name: str, public_ip: str, dry_run: bool = False) -> None:
         """Add a new DNS record to CloudFlare
 
         Args:
-            local_record (SubDomain): local subdomain configuration
+            local_record (Record): local subdomain configuration
             zone_id (str): ID of the zone to place the new record
             zone_name (str): Name of the zone
             public_ip (str): Public IP Address
@@ -71,11 +74,11 @@ class CloudflareApi:
         self.logger.info(f'[CREATED]: {fqdn} -> {public_ip}')
         return
 
-    def update_record(self, local_record: SubDomain, cf_record: CfRecord, public_ip: str, dry_run: bool = False) -> None:
+    def update_record(self, local_record: Record, cf_record: CfRecord, public_ip: str, dry_run: bool = False) -> None:
         """Update an existing DNS Record on CloudFlare
 
         Args:
-            local_record (SubDomain): local subdomain configuration
+            local_record (Record): local subdomain configuration
             cf_record (CfRecord): CloudFlare record configuration
             public_ip (str): Public IP Address
             dry_run (bool): is this a dry run. Defaults to False.

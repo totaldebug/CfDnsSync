@@ -2,7 +2,7 @@ from functools import wraps
 import click
 
 
-def command():
+def command(group = None):
     """
     Wrapper to lazy load commands when commands being executed only
     """
@@ -14,7 +14,10 @@ def command():
             import importlib
 
             name = fn.__name__
-            module = importlib.import_module(f".commands.{name}", package=__package__)
+            if group:
+                module = importlib.import_module(f".commands.{group}.{name}", package=__package__)
+            else:
+                module = importlib.import_module(f".commands.{name}", package=__package__)
             cmd = getattr(module, name)
 
             try:
@@ -57,7 +60,7 @@ def info():
 @click.option(
     "--zone",
     "-z",
-    "zone_ids",
+    "zone_names",
     multiple=True,
     show_default=True,
     help="Show specific zone only, can be used multiple times.",
@@ -70,11 +73,11 @@ def info():
     help="Only show enabled zones",
 )
 @click.option(
-    "--show-subdomains",
-    "show_subdomains",
+    "--show-records",
+    "show_records",
     is_flag=True,
     show_default=True,
-    help="Show a list of subdomains",
+    help="Show a list of records",
 )
 def zones():
     """
@@ -85,8 +88,9 @@ def zones():
 
 @command()
 @click.option(
-    "--zones",
-    "zones",
+    "--zone",
+    "-z",
+    "zone_names",
     type=str,
     multiple=True,
     show_default=True,
@@ -138,9 +142,50 @@ def update():
     """
     pass
 
+@cli.group()
+def list():
+    """
+    Print a table of zones or subdomains from local or cloudflare
+    """
+    pass
+
+@command('list')
+@click.option(
+    "--zone",
+    "-z",
+    "zone_names",
+    type=str,
+    multiple=True,
+    show_default=True,
+    help="List specific zone only",
+)
+def cf_records():
+    """
+    Show a list of cloudflare subdomain records
+    """
+    pass
+
+@command('list')
+@click.option(
+    "--zone",
+    "-z",
+    "zone_names",
+    type=str,
+    multiple=True,
+    show_default=True,
+    help="List specific zone only",
+)
+def local_records():
+    """
+    show a list of locally configured subdomain records
+    """
+    pass
 
 cli.add_command(info)
 cli.add_command(zones)
 cli.add_command(sync)
 cli.add_command(bug_report)
 cli.add_command(update)
+
+list.add_command(cf_records)
+list.add_command(local_records)

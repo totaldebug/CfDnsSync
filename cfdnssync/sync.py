@@ -1,7 +1,8 @@
+from typing import Optional
 from cfdnssync.config import Config
 from cfdnssync.factory import factory, logger
 from cfdnssync.util.get_ip import get_public_ip
-from cfdnssync.zones import CfZone, CfRecord
+from cfdnssync.zones import CfZone
 
 class SyncConfig:
     def __init__(self, config: Config):
@@ -18,8 +19,9 @@ class SyncConfig:
 
 
 class Sync:
-    def __init__(self, config: Config, progressbar=None):
+    def __init__(self, config: Config, zone_names: Optional[list[str]]=None, progressbar=None):
         self.config = config
+        self.zone_names = zone_names
         self.sync_config = SyncConfig(config)
         self.cf = factory.cloudflare_api()
         self.ip_addresses = {4: None, 6: None}
@@ -34,25 +36,25 @@ class Sync:
             yield from iterable
 
     def sync(self, dry_run=False):
-        zones = factory.zones(enabled_only=True)
-
-
+        zones = factory.zones(zone_names=self.zone_names, enabled_only=True)
+        if not zones:
+            logger.warning("No matching zones found")
         # Loop through enabled zones.
         for zone in zones:
-            logger.info(f"Getting zone: {zone.zone_id}")
+            logger.info(f"Getting zone: {zone.name}")
             # grab the zone identifier
             try:
-                cf_zones: list[CfZone] = factory.cf_zones(cf=self.cf, zone_id=zone.zone_id)
+                cf_zones: list[CfZone] = factory.cf_zones(cf=self.cf, zone_name=zone.name)
 
             except Exception as e:
-                logger.error(f'Unable to get zone: {zone.zone_id} from CloudFlare: {e}')
+                logger.error(f'Unable to get zone: {zone.name} from CloudFlare: {e}')
                 continue
 
             # there should only be one zone
             for cf_zone in sorted(cf_zones, key=lambda v: v.id):
                 logger.info(f"Processing Zone: {cf_zone.id} with name: {cf_zone.name}")
 
-            it = self.progressbar(zone.subdomains, desc="Processing subdomains")
+            it = self.progressbar(zone.records, desc="Processing subdomains")
             for dns_record in it:
                 if self.ip_addresses[4] and dns_record.type != 'AAAA':
                     public_ip = self.ip_addresses[4]
